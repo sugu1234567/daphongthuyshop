@@ -1,5 +1,6 @@
-package vn.sugu.daphongthuyshop.dto.response.authResponse;
+package vn.sugu.daphongthuyshop.dto.response.userResponse;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import vn.sugu.daphongthuyshop.enums.Role;
@@ -10,11 +11,11 @@ import vn.sugu.daphongthuyshop.enums.Role;
 @AllArgsConstructor
 @Builder
 
-public class RegisterResponse {
+public class UpdateUserResponse {
     String fullName;
-    String email;
-    String password;
     String dob;
+    String gender;
     String phone;
+    String address;
     Role role;
 }

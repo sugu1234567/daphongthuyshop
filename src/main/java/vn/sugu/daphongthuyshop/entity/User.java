@@ -37,6 +37,7 @@ public class User {
     String email;
     String password;
     String dob;
+    String gender;
     String phone;
     String address;
 

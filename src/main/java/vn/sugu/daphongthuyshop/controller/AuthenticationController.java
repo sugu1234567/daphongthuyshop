@@ -22,11 +22,11 @@ import vn.sugu.daphongthuyshop.dto.request.authRequest.LogoutRequest;
 import vn.sugu.daphongthuyshop.dto.request.authRequest.RefreshRequest;
 import vn.sugu.daphongthuyshop.dto.request.authRequest.RegisterRequest;
 import vn.sugu.daphongthuyshop.dto.request.authRequest.ResetPasswordRequest;
-import vn.sugu.daphongthuyshop.dto.response.APIResponse;
-import vn.sugu.daphongthuyshop.dto.response.AuthenticationResponse;
-import vn.sugu.daphongthuyshop.dto.response.IntrospectResponse;
-import vn.sugu.daphongthuyshop.dto.response.IsAuthenticatedResponse;
-import vn.sugu.daphongthuyshop.dto.response.RegisterResponse;
+import vn.sugu.daphongthuyshop.dto.response.authResponse.APIResponse;
+import vn.sugu.daphongthuyshop.dto.response.authResponse.AuthenticationResponse;
+import vn.sugu.daphongthuyshop.dto.response.authResponse.IntrospectResponse;
+import vn.sugu.daphongthuyshop.dto.response.authResponse.IsAuthenticatedResponse;
+import vn.sugu.daphongthuyshop.dto.response.authResponse.RegisterResponse;
 import vn.sugu.daphongthuyshop.service.AuthenticationService;
 
 @RestController

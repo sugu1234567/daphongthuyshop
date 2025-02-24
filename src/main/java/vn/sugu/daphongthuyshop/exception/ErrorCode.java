@@ -11,6 +11,8 @@ public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(500, "Internal error", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_KEY(400, "Invalid key", HttpStatus.BAD_REQUEST),
     USER_EXISTED(400, "User already exists", HttpStatus.BAD_REQUEST),
+    IS_REQUIRED(400, "Field is required", HttpStatus.BAD_REQUEST),
+    EMAIL_INVALID(400, "Invalid email format ", HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(400, "Username must be at least 3 characters", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD(400, "Password must be at least 8 characters", HttpStatus.BAD_REQUEST),
     LOGIN_INVALID(400, "Username or Password is incorrect", HttpStatus.BAD_REQUEST),
@@ -23,6 +25,7 @@ public enum ErrorCode {
     ACCESS_DENIED(403, "Access denied", HttpStatus.FORBIDDEN),
     TOKEN_INVALID(401, "No authorization token was found", HttpStatus.UNAUTHORIZED),
     TOKEN_EXPIRATION(401, "Token is expired", HttpStatus.UNAUTHORIZED),
+
     MISSING_COOKIE(400, "Required cookie is missing", HttpStatus.BAD_REQUEST);
 
     private final int code;
