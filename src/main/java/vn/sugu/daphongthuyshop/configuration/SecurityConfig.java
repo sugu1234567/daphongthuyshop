@@ -32,7 +32,7 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 
-                        // .requestMatchers("/api/v1/users/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/v1/users/**").hasAnyRole("ADMIN", "CUSTOMER")
                         // .requestMatchers("/api/v1/mentor/**").hasAnyRole("ADMIN", "MENTOR")
                         // .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 

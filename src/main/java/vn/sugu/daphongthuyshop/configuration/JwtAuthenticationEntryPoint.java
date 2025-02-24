@@ -1,6 +1,6 @@
 package vn.sugu.daphongthuyshop.configuration;
 
-import vn.sugu.daphongthuyshop.dto.response.APIResponse;
+import vn.sugu.daphongthuyshop.dto.response.authResponse.APIResponse;
 import vn.sugu.daphongthuyshop.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

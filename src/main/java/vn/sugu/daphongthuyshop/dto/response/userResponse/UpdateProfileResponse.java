@@ -1,8 +1,8 @@
-package vn.sugu.daphongthuyshop.dto.response.authResponse;
+package vn.sugu.daphongthuyshop.dto.response.userResponse;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import vn.sugu.daphongthuyshop.enums.Role;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -10,11 +10,10 @@ import vn.sugu.daphongthuyshop.enums.Role;
 @AllArgsConstructor
 @Builder
 
-public class RegisterResponse {
+public class UpdateProfileResponse {
     String fullName;
-    String email;
-    String password;
     String dob;
+    String gender;
     String phone;
-    Role role;
+    String address;
 }

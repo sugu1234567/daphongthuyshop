@@ -1,4 +1,4 @@
-package vn.sugu.daphongthuyshop.dto.response;
+package vn.sugu.daphongthuyshop.dto.response.authResponse;
 
 import java.util.Date;
 

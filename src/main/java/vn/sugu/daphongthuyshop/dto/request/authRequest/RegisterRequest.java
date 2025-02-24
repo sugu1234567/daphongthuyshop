@@ -2,7 +2,6 @@ package vn.sugu.daphongthuyshop.dto.request.authRequest;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import vn.sugu.daphongthuyshop.enums.Role;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
