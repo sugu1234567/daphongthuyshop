@@ -1,24 +1,19 @@
 package vn.sugu.daphongthuyshop.mapper;
 
-import org.springframework.stereotype.Component;
-
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import vn.sugu.daphongthuyshop.dto.request.userRequest.CreateUserRequest;
+import vn.sugu.daphongthuyshop.dto.request.userRequest.UpdateUserRequest;
 import vn.sugu.daphongthuyshop.dto.response.userResponse.UserResponse;
 import vn.sugu.daphongthuyshop.entity.User;
 
-@Component
-public class UserMapper {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-    public UserResponse mapToUserResponse(User user) {
+    User toUser(CreateUserRequest request);
 
-        return UserResponse.builder()
-                .userId(user.getUserId())
-                .fullName(user.getFullName())
-                .email(user.getEmail())
-                .dob(user.getDob())
-                .gender(user.getGender())
-                .phone(user.getPhone())
-                .address(user.getAddress())
-                .role(user.getRole())
-                .build();
-    }
+    UserResponse toUserResponse(User user);
+
+    void updateUser(@MappingTarget User user, UpdateUserRequest request);
 }

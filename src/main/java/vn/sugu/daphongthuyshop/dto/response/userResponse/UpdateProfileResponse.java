@@ -16,4 +16,5 @@ public class UpdateProfileResponse {
     String gender;
     String phone;
     String address;
+    String avatarUrl;
 }

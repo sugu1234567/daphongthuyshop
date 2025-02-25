@@ -36,6 +36,8 @@ public class UpdateProfileRequest {
     @NotBlank(message = "IS_REQUIRED")
     String province;
 
+    String avatarUrl;
+
     public String getFullAddress() {
         return String.join(", ", street, ward, district, province);
     }
