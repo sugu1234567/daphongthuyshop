@@ -6,17 +6,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import vn.sugu.daphongthuyshop.configuration.SecurityUtils;
 import vn.sugu.daphongthuyshop.dto.request.userRequest.CreateUserRequest;
 import vn.sugu.daphongthuyshop.dto.request.userRequest.UpdateProfileRequest;
 import vn.sugu.daphongthuyshop.dto.request.userRequest.UpdateUserRequest;
 import vn.sugu.daphongthuyshop.dto.response.userResponse.UpdateProfileResponse;
-import vn.sugu.daphongthuyshop.dto.response.userResponse.UpdateUserResponse;
 import vn.sugu.daphongthuyshop.dto.response.userResponse.UserResponse;
 import vn.sugu.daphongthuyshop.entity.User;
 import vn.sugu.daphongthuyshop.enums.Role;
@@ -29,112 +28,54 @@ import vn.sugu.daphongthuyshop.repository.UserRepository;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-
 public class UserService {
 
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     UserMapper userMapper;
+    CloudinaryService cloudinaryService; // Thêm CloudinaryService
 
     @PreAuthorize("hasRole('ADMIN')")
-    public UserResponse createUser(CreateUserRequest request) {
-
+    public UserResponse createUser(CreateUserRequest request, MultipartFile avatarFile) throws Exception {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
-        User user = User.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .dob(request.getDob())
-                .gender(request.getGender())
-                .phone(request.getPhone())
-                .address(request.getFullAddress())
-                .role(Role.CUSTOMER)
-                .build();
-        userRepository.save(user);
+        User user = userMapper.toUser(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.CUSTOMER);
+        user.setAddress(request.getFullAddress());
 
-        return UserResponse.builder()
-                .userId(user.getUserId())
-                .fullName(user.getFullName())
-                .email(user.getEmail())
-                .gender(user.getGender())
-                .phone(user.getPhone())
-                .dob(user.getDob())
-                .address(user.getAddress())
-                .role(user.getRole())
-                .build();
+        // Upload avatar nếu có file
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            String avatarUrl = cloudinaryService.uploadFile(avatarFile);
+            user.setAvatarUrl(avatarUrl);
+        }
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toUserResponse(savedUser);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public UpdateUserResponse updateUser(String email, UpdateUserRequest request) {
-        if (!SecurityUtils.isAdmin()) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
-        }
-
+    public UserResponse updateUser(String email, UpdateUserRequest request, MultipartFile avatarFile) throws Exception {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        user.setFullName(request.getFullName());
-        user.setDob(request.getDob());
-        user.setGender(request.getGender());
-        user.setPhone(request.getPhone());
+        userMapper.updateUser(user, request);
         user.setAddress(request.getFullAddress());
-        user.setRole(request.getRole());
+
+        // Upload avatar nếu có file
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            String avatarUrl = cloudinaryService.uploadFile(avatarFile);
+            user.setAvatarUrl(avatarUrl);
+        }
 
         User updatedUser = userRepository.save(user);
-        return UpdateUserResponse.builder()
-                .fullName(updatedUser.getFullName())
-                .dob(updatedUser.getDob())
-                .gender(updatedUser.getGender())
-                .phone(updatedUser.getPhone())
-                .address(updatedUser.getAddress())
-                .role(updatedUser.getRole())
-                .build();
+        return userMapper.toUserResponse(updatedUser);
     }
 
-    public UserResponse showProfileData() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
-        return UserResponse.builder()
-                .userId(user.getUserId())
-                .fullName(user.getFullName())
-                .email(user.getEmail())
-                .gender(user.getGender())
-                .phone(user.getPhone())
-                .dob(user.getDob())
-                .role(user.getRole())
-                .build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public Page<UserResponse> searchUser(String keyword, Pageable pageable) {
-
-        if (!SecurityUtils.isAdmin()) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
-        }
-
-        Page<User> user = userRepository.findByFullNameContainingOrEmailContainingOrPhoneContaining(
-                keyword, keyword, keyword, pageable);
-
-        return user.map(userMapper::mapToUserResponse);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public Page<UserResponse> getAllEmployees(Pageable pageable) {
-        if (!SecurityUtils.isAdmin()) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
-        }
-
-        Page<User> user = userRepository.findAll(pageable);
-        return user.map(userMapper::mapToUserResponse);
-    }
-
-    public UpdateProfileResponse updateProfile(UpdateProfileRequest request) {
+    public UpdateProfileResponse updateProfile(UpdateProfileRequest request, MultipartFile avatarFile)
+            throws Exception {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByEmail(email).orElseThrow(
@@ -145,6 +86,12 @@ public class UserService {
         user.setGender(request.getGender());
         user.setPhone(request.getPhone());
         user.setAddress(request.getFullAddress());
+
+        // Upload avatar nếu có file
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            String avatarUrl = cloudinaryService.uploadFile(avatarFile);
+            user.setAvatarUrl(avatarUrl);
+        }
 
         userRepository.save(user);
 
@@ -154,19 +101,38 @@ public class UserService {
                 .phone(user.getPhone())
                 .dob(user.getDob())
                 .address(user.getAddress())
+                .avatarUrl(user.getAvatarUrl())
                 .build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(String email) {
-        if (!SecurityUtils.isAdmin()) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
-        }
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
         userRepository.delete(user);
     }
 
+    public UserResponse showProfileData() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return UserResponse.builder()
+                .userId(user.getUserId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .gender(user.getGender())
+                .phone(user.getPhone())
+                .dob(user.getDob())
+                .role(user.getRole())
+                .avatarUrl(user.getAvatarUrl())
+                .address(user.getAddress())
+                .build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<UserResponse> searchUser(String keyword, Pageable pageable) {
+        Page<User> users = userRepository.findByFullNameContainingOrEmailContainingOrPhoneContaining(
+                keyword, keyword, keyword, pageable);
+        return users.map(user -> userMapper.toUserResponse(user));
+    }
 }
