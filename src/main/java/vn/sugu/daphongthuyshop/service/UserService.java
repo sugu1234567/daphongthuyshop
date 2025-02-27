@@ -33,7 +33,7 @@ public class UserService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     UserMapper userMapper;
-    CloudinaryService cloudinaryService; // Thêm CloudinaryService
+    CloudinaryService cloudinaryService;
 
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponse createUser(CreateUserRequest request, MultipartFile avatarFile) throws Exception {
@@ -46,7 +46,6 @@ public class UserService {
         user.setRole(Role.CUSTOMER);
         user.setAddress(request.getFullAddress());
 
-        // Upload avatar nếu có file
         if (avatarFile != null && !avatarFile.isEmpty()) {
             String avatarUrl = cloudinaryService.uploadFile(avatarFile);
             user.setAvatarUrl(avatarUrl);
@@ -64,7 +63,6 @@ public class UserService {
         userMapper.updateUser(user, request);
         user.setAddress(request.getFullAddress());
 
-        // Upload avatar nếu có file
         if (avatarFile != null && !avatarFile.isEmpty()) {
             String avatarUrl = cloudinaryService.uploadFile(avatarFile);
             user.setAvatarUrl(avatarUrl);
@@ -87,7 +85,6 @@ public class UserService {
         user.setPhone(request.getPhone());
         user.setAddress(request.getFullAddress());
 
-        // Upload avatar nếu có file
         if (avatarFile != null && !avatarFile.isEmpty()) {
             String avatarUrl = cloudinaryService.uploadFile(avatarFile);
             user.setAvatarUrl(avatarUrl);

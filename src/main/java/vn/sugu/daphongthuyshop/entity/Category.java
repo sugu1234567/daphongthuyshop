@@ -3,6 +3,7 @@ package vn.sugu.daphongthuyshop.entity;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,4 +36,6 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     List<Product> products;
 
+    @Column(name = "is_deleted", nullable = false)
+    boolean isDeleted = false;
 }

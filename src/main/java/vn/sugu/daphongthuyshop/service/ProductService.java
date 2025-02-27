@@ -16,5 +16,6 @@ import vn.sugu.daphongthuyshop.repository.ProductRepository;
 public class ProductService {
 
     ProductRepository productRepository;
+    CloudinaryService cloudinaryService;
 
 }

@@ -1,7 +1,6 @@
 package vn.sugu.daphongthuyshop.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import vn.sugu.daphongthuyshop.dto.request.userRequest.CreateUserRequest;
 import vn.sugu.daphongthuyshop.dto.request.userRequest.UpdateUserRequest;
