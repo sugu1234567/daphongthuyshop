@@ -1,6 +1,8 @@
 package vn.sugu.daphongthuyshop.service;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -86,5 +88,12 @@ public class CategoryService {
 
         Page<Category> categories = categoryRepository.findByNameContaining(normalizedName, pageable);
         return categories.map(categoryMapper::toCategoryResponse);
+    }
+
+    public List<CategoryResponse> getAllCategories() {
+        List<Category> categories = categoryRepository.findByIsDeletedFalse();
+        return categories.stream()
+                .map(categoryMapper::toCategoryResponse)
+                .collect(Collectors.toList());
     }
 }

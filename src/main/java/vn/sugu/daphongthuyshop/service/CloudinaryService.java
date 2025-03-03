@@ -20,13 +20,12 @@ public class CloudinaryService {
 
     public String uploadFile(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
-            return null; // Hoặc trả về default URL nếu cần
+            return null;
         }
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
         return uploadResult.get("secure_url").toString();
     }
 
-    // Có thể thêm phương thức tùy chỉnh (resize, crop, v.v.)
     public String uploadFileWithOptions(MultipartFile file, int width, int height, String crop) throws IOException {
         if (file == null || file.isEmpty()) {
             return null;
