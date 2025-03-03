@@ -1,9 +1,11 @@
 package vn.sugu.daphongthuyshop.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,7 +39,9 @@ public class Product {
     String description;
     BigDecimal price;
     int stock;
-    String imageUrl;
+
+    @Column(name = "is_deleted", nullable = false)
+    boolean isDeleted = false;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -52,4 +56,15 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     List<OrderDetail> orderDetails;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ProductImage> productImages = new ArrayList<>();
+
+    // Helper method để thêm hình ảnh
+    public void addImage(String imageUrl) {
+        ProductImage productImage = ProductImage.builder()
+                .imageUrl(imageUrl)
+                .product(this)
+                .build();
+        this.productImages.add(productImage);
+    }
 }

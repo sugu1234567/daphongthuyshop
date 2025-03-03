@@ -12,6 +12,8 @@ import vn.sugu.daphongthuyshop.dto.response.authResponse.APIResponse;
 import vn.sugu.daphongthuyshop.dto.response.categoryResponse.CategoryResponse;
 import vn.sugu.daphongthuyshop.service.CategoryService;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -67,6 +69,13 @@ public class CategoryController {
         categoryService.deleteCategory(name);
         return APIResponse.<Void>builder()
                 .message("Danh mục đã được xóa")
+                .build();
+    }
+
+    @GetMapping("/all")
+    APIResponse<List<CategoryResponse>> getAllCategories() {
+        return APIResponse.<List<CategoryResponse>>builder()
+                .data(categoryService.getAllCategories())
                 .build();
     }
 }
