@@ -20,6 +20,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import vn.sugu.daphongthuyshop.enums.OrderStatus;
+import vn.sugu.daphongthuyshop.enums.PaymentStatus;
 
 @Entity
 @Table(name = "orders")
@@ -42,6 +43,9 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     OrderStatus status; // PENDING, PROCESSING, COMPLETED, CANCELED
+
+    @Enumerated(EnumType.STRING)
+    PaymentStatus paymentStatus; // PAID, UNPAID
 
     LocalDateTime createdAt;
 

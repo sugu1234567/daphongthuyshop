@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import vn.sugu.daphongthuyshop.enums.Role;
 
@@ -28,7 +29,7 @@ import vn.sugu.daphongthuyshop.enums.Role;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@ToString(exclude = { "cart" })
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
