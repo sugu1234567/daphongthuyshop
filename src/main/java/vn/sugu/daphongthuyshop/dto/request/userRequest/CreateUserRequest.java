@@ -34,21 +34,5 @@ public class CreateUserRequest {
     @NotBlank(message = "IS_REQUIRED")
     String phone;
 
-    @NotBlank(message = "IS_REQUIRED")
-    String street;
-
-    @NotBlank(message = "IS_REQUIRED")
-    String ward;
-
-    @NotBlank(message = "IS_REQUIRED")
-    String district;
-
-    @NotBlank(message = "IS_REQUIRED")
-    String province;
-
     String avatarUrl;
-
-    public String getFullAddress() {
-        return String.join(", ", street, ward, district, province);
-    }
 }

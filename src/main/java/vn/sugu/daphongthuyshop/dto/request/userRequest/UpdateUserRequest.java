@@ -13,7 +13,7 @@ import vn.sugu.daphongthuyshop.enums.Role;
 
 public class UpdateUserRequest {
 
-    @NotBlank(message = "IS_REQUIRED")
+    @NotBlank(message = "NAME_IS_REQUIRED")
     String fullName;
 
     @NotBlank(message = "IS_REQUIRED")
@@ -25,21 +25,5 @@ public class UpdateUserRequest {
     @NotBlank(message = "IS_REQUIRED")
     String phone;
 
-    @NotBlank(message = "IS_REQUIRED")
-    String street;
-
-    @NotBlank(message = "IS_REQUIRED")
-    String ward;
-
-    @NotBlank(message = "IS_REQUIRED")
-    String district;
-
-    @NotBlank(message = "IS_REQUIRED")
-    String province;
-
     Role role;
-
-    public String getFullAddress() {
-        return String.join(", ", street, ward, district, province);
-    }
 }
