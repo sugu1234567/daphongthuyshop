@@ -44,8 +44,6 @@ public class UserService {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.CUSTOMER);
-        user.setAddress(request.getFullAddress());
-
         if (avatarFile != null && !avatarFile.isEmpty()) {
             String avatarUrl = cloudinaryService.uploadFile(avatarFile);
             user.setAvatarUrl(avatarUrl);
@@ -61,7 +59,6 @@ public class UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.updateUser(user, request);
-        user.setAddress(request.getFullAddress());
 
         if (avatarFile != null && !avatarFile.isEmpty()) {
             String avatarUrl = cloudinaryService.uploadFile(avatarFile);
@@ -83,7 +80,6 @@ public class UserService {
         user.setDob(request.getDob());
         user.setGender(request.getGender());
         user.setPhone(request.getPhone());
-        user.setAddress(request.getFullAddress());
 
         if (avatarFile != null && !avatarFile.isEmpty()) {
             String avatarUrl = cloudinaryService.uploadFile(avatarFile);
@@ -97,7 +93,6 @@ public class UserService {
                 .gender(user.getGender())
                 .phone(user.getPhone())
                 .dob(user.getDob())
-                .address(user.getAddress())
                 .avatarUrl(user.getAvatarUrl())
                 .build();
     }
@@ -122,7 +117,6 @@ public class UserService {
                 .dob(user.getDob())
                 .role(user.getRole())
                 .avatarUrl(user.getAvatarUrl())
-                .address(user.getAddress())
                 .build();
     }
 
