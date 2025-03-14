@@ -28,7 +28,6 @@ public class CreateProductRequest {
     @Min(value = 0, message = "STOCK_MUST_BE_NON_NEGATIVE")
     int stock;
 
-    @NotBlank(message = "CATEGORY_IS_REQUIRED")
     String categoryId;
 
 }

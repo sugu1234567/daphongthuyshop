@@ -44,7 +44,6 @@ public class CartService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         String email = authentication.getName();
-        log.info("Fetching user with email: {}", email);
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
@@ -55,14 +54,11 @@ public class CartService {
         Cart cart = cartRepository.findByUser(user)
                 .orElseGet(() -> {
                     Cart newCart = Cart.builder().user(user).build();
-                    log.info("Created new cart for user: {}", user.getEmail());
                     return cartRepository.save(newCart);
                 });
 
-        log.info("Cart items size before operation: {}", cart.getCartItems() != null ? cart.getCartItems().size() : 0);
         if (cart.getCartItems() == null) {
             cart.setCartItems(new ArrayList<>());
-            log.warn("Cart items was null, initialized new ArrayList");
         }
 
         Product product = productRepository.findById(request.getProductId())
@@ -101,10 +97,8 @@ public class CartService {
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
-        log.info("Cart items size before update: {}", cart.getCartItems() != null ? cart.getCartItems().size() : 0);
         if (cart.getCartItems() == null) {
             cart.setCartItems(new ArrayList<>());
-            log.warn("Cart items was null, initialized new ArrayList");
         }
 
         CartItem cartItem = cart.getCartItems().stream()
@@ -128,10 +122,8 @@ public class CartService {
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
-        log.info("Cart items size before remove: {}", cart.getCartItems() != null ? cart.getCartItems().size() : 0);
         if (cart.getCartItems() == null) {
             cart.setCartItems(new ArrayList<>());
-            log.warn("Cart items was null, initialized new ArrayList");
         }
 
         CartItem cartItem = cart.getCartItems().stream()
@@ -149,11 +141,8 @@ public class CartService {
 
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
-
-        log.info("Cart items size for get: {}", cart.getCartItems() != null ? cart.getCartItems().size() : 0);
         if (cart.getCartItems() == null) {
             cart.setCartItems(new ArrayList<>());
-            log.warn("Cart items was null, initialized new ArrayList");
         }
 
         return mapToCartResponse(cart);
