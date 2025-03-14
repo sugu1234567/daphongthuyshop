@@ -51,4 +51,10 @@ public class Order {
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     OrderDetail orderDetail;
+
+    @ManyToOne
+    @JoinColumn(name = "shipping_address_id")
+    ShippingAddress shippingAddress;
+
+    String paymentMethod;
 }

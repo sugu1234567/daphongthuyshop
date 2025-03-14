@@ -100,18 +100,16 @@ public class ProductService {
     }
 
     public void deleteProduct(String productId) {
-        // Tìm sản phẩm
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
-        // Kiểm tra quy tắc nghiệp vụ: Nếu có đơn hàng thì chỉ ẩn
         if (!product.getOrderDetails().isEmpty()) {
             product.setDeleted(true);
         } else {
             productRepository.delete(product);
         }
 
-        // Lưu thay đổi nếu ẩn
         if (product.isDeleted()) {
             productRepository.save(product);
         }
@@ -119,18 +117,15 @@ public class ProductService {
 
     public Page<ProductResponse> searchProduct(String name, String categoryName, BigDecimal minPrice,
             Pageable pageable) {
-        // Nếu không có tiêu chí nào, trả về trang rỗng
         if ((name == null || name.trim().isEmpty()) &&
                 (categoryName == null || categoryName.trim().isEmpty()) &&
                 minPrice == null) {
             return new PageImpl<>(Collections.emptyList(), pageable, 0);
         }
 
-        // Chuẩn hóa tiêu chí
         String normalizedName = name != null ? name.trim().toLowerCase() : null;
         String normalizedCategoryName = categoryName != null ? categoryName.trim().toLowerCase() : null;
 
-        // Tìm kiếm theo nhiều tiêu chí
         List<Product> products = productRepository.findByCriteria(normalizedName, normalizedCategoryName, minPrice,
                 pageable);
         return new PageImpl<>(products.stream().map(productMapper::toProductResponse).toList(), pageable,
