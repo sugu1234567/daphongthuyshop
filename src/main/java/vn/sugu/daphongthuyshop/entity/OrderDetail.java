@@ -29,7 +29,7 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.UUID)
     String orderDetailId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "order_id")
     Order order;
 

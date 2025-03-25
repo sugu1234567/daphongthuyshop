@@ -10,12 +10,12 @@ import vn.sugu.daphongthuyshop.entity.ShippingAddress;
 import vn.sugu.daphongthuyshop.entity.User;
 
 @Repository
-public interface ShippingAddressRepository extends JpaRepository<ShippingAddress, Long> {
+public interface ShippingAddressRepository extends JpaRepository<ShippingAddress, String> {
     List<ShippingAddress> findByUser(User user);
 
-    Optional<ShippingAddress> findByIdAndUser(Long id, User user);
+    Optional<ShippingAddress> findByIdAndUser(String id, User user);
 
-    void deleteByIdAndUser(Long id, User user);
+    void deleteByIdAndUser(String id, User user);
 
     Optional<ShippingAddress> findByUserAndIsDefault(User user, boolean isDefault);
 }

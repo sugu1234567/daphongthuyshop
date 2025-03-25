@@ -69,7 +69,7 @@ public class ShippingAddressService {
         return toShippingAddressResponse(savedAddress);
     }
 
-    public ShippingAddressResponse updateShippingAddress(Long id, CreateShippingAddress request) {
+    public ShippingAddressResponse updateShippingAddress(String id, CreateShippingAddress request) {
         User user = getCurrentUser();
         ShippingAddress existingAddress = shippingAddressRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new AppException(ErrorCode.SHIPPING_ADDRESS_NOT_FOUND));
@@ -92,7 +92,7 @@ public class ShippingAddressService {
         return toShippingAddressResponse(updatedAddress);
     }
 
-    public void deleteShippingAddress(Long id) {
+    public void deleteShippingAddress(String id) {
         User user = getCurrentUser();
         ShippingAddress existingAddress = shippingAddressRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new AppException(ErrorCode.SHIPPING_ADDRESS_NOT_FOUND));
