@@ -33,7 +33,7 @@ public class ShippingAddressController {
     }
 
     @PutMapping("/{id}")
-    APIResponse<ShippingAddressResponse> updateShippingAddress(@PathVariable Long id,
+    APIResponse<ShippingAddressResponse> updateShippingAddress(@PathVariable String id,
             @Valid @RequestBody CreateShippingAddress request) {
         return APIResponse.<ShippingAddressResponse>builder()
                 .message("Địa chỉ giao hàng đã được cập nhật thành công")
@@ -42,7 +42,7 @@ public class ShippingAddressController {
     }
 
     @DeleteMapping("/{id}")
-    APIResponse<Void> deleteShippingAddress(@PathVariable Long id) {
+    APIResponse<Void> deleteShippingAddress(@PathVariable String id) {
         shippingAddressService.deleteShippingAddress(id);
         return APIResponse.<Void>builder()
                 .message("Địa chỉ giao hàng đã được xóa thành công")
