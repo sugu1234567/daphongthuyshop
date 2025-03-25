@@ -183,12 +183,6 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
-        // Lấy người dùng hiện tại để kiểm tra quyền
-        User currentUser = getCurrentUser();
-        if (!order.getUser().getUserId().equals(currentUser.getUserId())) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
-        }
-
         String newStatus = request.getNewStatus();
 
         // Chuyển đổi trạng thái mới thành enum và kiểm tra hợp lệ
