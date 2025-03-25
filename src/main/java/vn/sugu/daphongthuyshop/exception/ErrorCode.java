@@ -25,6 +25,7 @@ public enum ErrorCode {
     ORDER_STATUS_UPDATE_NOT_ALLOWED(400, "Không được phép cập nhật trạng thái đơn hàng", HttpStatus.BAD_REQUEST),
 
     CATEGORY_NAME_CHANGE_NOT_ALLOWED(400, "Không được phép thay đổi tên danh mục", HttpStatus.BAD_REQUEST),
+    REVIEW_NOT_ALLOWED(400, "Không được phép đánh giá sản phẩm", HttpStatus.BAD_REQUEST),
     CANNOT_DELETE_DEFAULT_ADDRESS(400, "Không thể xóa địa chỉ mặc định", HttpStatus.BAD_REQUEST),
 
     LOGIN_BLANK(400, "Tên người dùng hoặc mật khẩu không được để trống", HttpStatus.BAD_REQUEST),
@@ -36,6 +37,7 @@ public enum ErrorCode {
     CART_ITEM_NOT_FOUND(404, "Không tìm thấy sản phẩm trong giỏ hàng", HttpStatus.NOT_FOUND),
     SHIPPING_ADDRESS_NOT_FOUND(404, "Không tìm thấy địa chỉ giao hàng", HttpStatus.NOT_FOUND),
     ORDER_NOT_FOUND(404, "Không tìm thấy đơn hàng", HttpStatus.NOT_FOUND),
+    REVIEW_NOT_FOUND(404, "Không tìm thấy đánh giá", HttpStatus.NOT_FOUND),
 
     UNAUTHENTICATED(401, "Chưa xác thực", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(403, "Bạn không có quyền", HttpStatus.FORBIDDEN),
@@ -57,6 +59,8 @@ public enum ErrorCode {
     PRICE_MUST_BE_POSITIVE(400, "Giá phải là số dương", HttpStatus.BAD_REQUEST),
     QUANTITY_MUST_BE_POSITIVE(400, "Số lượng phải là số dương", HttpStatus.BAD_REQUEST),
     STOCK_MUST_BE_NON_NEGATIVE(400, "Số lượng tồn kho không được âm", HttpStatus.BAD_REQUEST),
+
+    ALREADY_REVIEWED(400, "Người dùng đã đánh giá sản phẩm này", HttpStatus.BAD_REQUEST),
 
     MISSING_COOKIE(400, "Thiếu cookie bắt buộc", HttpStatus.BAD_REQUEST);
 
