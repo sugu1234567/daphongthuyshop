@@ -37,7 +37,6 @@ public class ReviewService {
     ProductRepository productRepository;
     OrderRepository orderRepository;
 
-    // Lấy người dùng hiện tại
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -54,6 +53,7 @@ public class ReviewService {
                 .userId(review.getUser().getUserId().toString())
                 .fullName(review.getUser().getFullName())
                 .productId(review.getProduct().getProductId())
+                .productName(review.getProduct().getName())
                 .rating(review.getRating())
                 .comment(review.getComment())
                 .createdAt(review.getCreatedAt())
@@ -66,23 +66,20 @@ public class ReviewService {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
-        // Kiểm tra xem người dùng đã mua sản phẩm và đơn hàng đã hoàn thành chưa
         List<Order> completedOrders = orderRepository.findByUserAndStatus(user, OrderStatus.COMPLETED);
         boolean hasPurchased = completedOrders.stream()
                 .flatMap(order -> order.getOrderDetails().stream())
                 .anyMatch(detail -> detail.getProduct().getProductId().equals(request.getProductId()));
 
         if (!hasPurchased) {
-            throw new AppException(ErrorCode.REVIEW_NOT_ALLOWED); // Người dùng chưa mua hoặc đơn hàng chưa hoàn thành
+            throw new AppException(ErrorCode.REVIEW_NOT_ALLOWED);
         }
 
-        // Kiểm tra xem người dùng đã đánh giá sản phẩm này chưa (tùy chọn)
         boolean alreadyReviewed = reviewRepository.findByUserAndProduct(user, product).isPresent();
         if (alreadyReviewed) {
-            throw new AppException(ErrorCode.ALREADY_REVIEWED); // Người dùng đã đánh giá sản phẩm này
+            throw new AppException(ErrorCode.ALREADY_REVIEWED);
         }
 
-        // Tạo review
         Review review = Review.builder()
                 .user(user)
                 .product(product)
@@ -91,13 +88,11 @@ public class ReviewService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        // Lưu review
         Review savedReview = reviewRepository.save(review);
 
         return toReviewResponse(savedReview);
     }
 
-    // Lấy danh sách đánh giá theo sản phẩm
     public List<ReviewResponse> getReviewsByProduct(String productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
@@ -111,42 +106,33 @@ public class ReviewService {
     public ReviewResponse updateReview(String reviewId, UpdateReviewRequest request) {
         User user = getCurrentUser();
 
-        // Tìm đánh giá theo ID
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new AppException(ErrorCode.REVIEW_NOT_FOUND));
 
-        // Kiểm tra quyền sở hữu
         if (!review.getUser().getUserId().equals(user.getUserId())) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
-        // Cập nhật thông tin
         review.setRating(request.getRating());
         review.setComment(request.getComment());
 
-        // Lưu và trả về
         Review updatedReview = reviewRepository.save(review);
         return toReviewResponse(updatedReview);
     }
 
-    // Xóa đánh giá
     public void deleteReview(String reviewId) {
         User user = getCurrentUser();
 
-        // Tìm đánh giá theo ID
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new AppException(ErrorCode.REVIEW_NOT_FOUND));
 
-        // Kiểm tra quyền sở hữu
         if (!review.getUser().getUserId().equals(user.getUserId())) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
-        // Xóa đánh giá
         reviewRepository.delete(review);
     }
 
-    // Lấy tất cả đánh giá
     public List<ReviewResponse> getAllReviews() {
         List<Review> reviews = reviewRepository.findAll();
         return reviews.stream()

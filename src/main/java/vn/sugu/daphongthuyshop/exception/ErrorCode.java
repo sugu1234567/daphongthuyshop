@@ -22,6 +22,7 @@ public enum ErrorCode {
     LOGIN_INVALID(400, "Tên người dùng hoặc mật khẩu không chính xác", HttpStatus.BAD_REQUEST),
     TOKEN_INVALID(401, "Không tìm thấy token xác thực", HttpStatus.UNAUTHORIZED),
     INVALID_STATUS(400, "Trạng thái không hợp lệ", HttpStatus.BAD_REQUEST),
+    DATE_INVALID(400, "thoi gian khong hop le", HttpStatus.BAD_REQUEST),
     ORDER_STATUS_UPDATE_NOT_ALLOWED(400, "Không được phép cập nhật trạng thái đơn hàng", HttpStatus.BAD_REQUEST),
 
     CATEGORY_NAME_CHANGE_NOT_ALLOWED(400, "Không được phép thay đổi tên danh mục", HttpStatus.BAD_REQUEST),

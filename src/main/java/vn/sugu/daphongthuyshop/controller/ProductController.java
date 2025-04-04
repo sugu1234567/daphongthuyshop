@@ -26,49 +26,59 @@ import java.math.BigDecimal;
 @Validated
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional
+@CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 
-    ProductService productService;
+        ProductService productService;
 
-    @PostMapping(consumes = { "multipart/form-data" })
-    APIResponse<ProductResponse> createProduct(
-            @Valid @RequestPart("request") CreateProductRequest request,
-            @RequestPart(value = "images", required = false) MultipartFile[] imageFiles) throws Exception {
-        return APIResponse.<ProductResponse>builder()
-                .data(productService.createProduct(request, imageFiles))
-                .message("Thêm sản phẩm thành công")
-                .build();
-    }
+        @PostMapping(consumes = { "multipart/form-data" })
+        APIResponse<ProductResponse> createProduct(
+                        @Valid @RequestPart("request") CreateProductRequest request,
+                        @RequestPart(value = "images", required = false) MultipartFile[] imageFiles) throws Exception {
+                return APIResponse.<ProductResponse>builder()
+                                .data(productService.createProduct(request, imageFiles))
+                                .message("Thêm sản phẩm thành công")
+                                .build();
+        }
 
-    @PutMapping(value = "/{productId}", consumes = { "multipart/form-data" })
-    APIResponse<ProductResponse> updateProduct(
-            @PathVariable String productId,
-            @Valid @RequestPart("request") UpdateProductRequest request,
-            @RequestPart(value = "images", required = false) MultipartFile[] imageFiles) throws Exception {
-        return APIResponse.<ProductResponse>builder()
-                .data(productService.updateProduct(productId, request, imageFiles))
-                .message("Cập nhật thành công")
-                .build();
-    }
+        @PutMapping(value = "/{productId}", consumes = { "multipart/form-data" })
+        APIResponse<ProductResponse> updateProduct(
+                        @PathVariable String productId,
+                        @Valid @RequestPart("request") UpdateProductRequest request,
+                        @RequestPart(value = "images", required = false) MultipartFile[] imageFiles) throws Exception {
+                return APIResponse.<ProductResponse>builder()
+                                .data(productService.updateProduct(productId, request, imageFiles))
+                                .message("Cập nhật thành công")
+                                .build();
+        }
 
-    @DeleteMapping("/{productId}")
-    APIResponse<Void> deleteProduct(@PathVariable String productId) throws Exception {
-        productService.deleteProduct(productId);
-        return APIResponse.<Void>builder()
-                .message("Sản phẩm đã được xóa")
-                .build();
-    }
+        @DeleteMapping("/{productId}")
+        APIResponse<Void> deleteProduct(@PathVariable String productId) throws Exception {
+                productService.deleteProduct(productId);
+                return APIResponse.<Void>builder()
+                                .message("Sản phẩm đã được xóa")
+                                .build();
+        }
 
-    @GetMapping
-    APIResponse<Page<ProductResponse>> searchProduct(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String categoryName,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @PageableDefault(size = 10, sort = "name", direction = Direction.ASC) Pageable pageable) {
-        Page<ProductResponse> result = productService.searchProduct(name, categoryName, minPrice, pageable);
-        return APIResponse.<Page<ProductResponse>>builder()
-                .data(result)
-                .message(result.isEmpty() ? "Không tìm thấy sản phẩm" : null)
-                .build();
-    }
+        @GetMapping
+        APIResponse<Page<ProductResponse>> searchProduct(
+                        @RequestParam(required = false) String name,
+                        @RequestParam(required = false) String categoryName,
+                        @RequestParam(required = false) BigDecimal minPrice,
+                        @PageableDefault(size = 10, sort = "name", direction = Direction.ASC) Pageable pageable) {
+                Page<ProductResponse> result = productService.searchProduct(name, categoryName, minPrice, pageable);
+                return APIResponse.<Page<ProductResponse>>builder()
+                                .data(result)
+                                .message(result.isEmpty() ? "Không tìm thấy sản phẩm" : null)
+                                .build();
+        }
+
+        @GetMapping("/all")
+        public APIResponse<Page<ProductResponse>> getAllProducts(Pageable pageable) {
+                Page<ProductResponse> products = productService.getAllProducts(pageable);
+                return APIResponse.<Page<ProductResponse>>builder()
+                                .data(products)
+                                .message("Lấy danh sách sản phẩm thành công")
+                                .build();
+        }
 }

@@ -67,4 +67,5 @@ public class Product {
                 .build();
         this.productImages.add(productImage);
     }
+
 }

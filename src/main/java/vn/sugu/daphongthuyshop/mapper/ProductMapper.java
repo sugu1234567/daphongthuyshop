@@ -16,6 +16,7 @@ public interface ProductMapper {
     Product toProduct(CreateProductRequest request);
 
     @Mapping(source = "category.categoryId", target = "categoryId")
+    @Mapping(source = "category.name", target = "categoryName")
     @Mapping(target = "imageUrls", expression = "java(product.getProductImages().stream().map(pi -> pi.getImageUrl()).collect(java.util.stream.Collectors.toList()))")
     ProductResponse toProductResponse(Product product);
 

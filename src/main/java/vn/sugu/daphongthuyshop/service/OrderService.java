@@ -60,6 +60,7 @@ public class OrderService {
         OrderResponse response = new OrderResponse();
         response.setOrderId(order.getOrderId());
         response.setUserId(order.getUser().getUserId().toString());
+        response.setFullName(order.getUser().getFullName());
         response.setShippingAddress(order.getShippingAddress());
         response.setNote(order.getNote());
         response.setTotalPrice(order.getTotalPrice());
@@ -153,9 +154,16 @@ public class OrderService {
         return toOrderResponse(savedOrder);
     }
 
-    public List<OrderResponse> getAllOrders() {
+    public List<OrderResponse> getAllOrdersByUser() {
         User user = getCurrentUser();
         List<Order> orders = orderRepository.findByUser(user);
+        return orders.stream()
+                .map(this::toOrderResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<OrderResponse> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
         return orders.stream()
                 .map(this::toOrderResponse)
                 .collect(Collectors.toList());

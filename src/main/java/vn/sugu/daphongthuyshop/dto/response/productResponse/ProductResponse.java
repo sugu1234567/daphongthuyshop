@@ -20,5 +20,6 @@ public class ProductResponse {
     int stock;
     List<String> imageUrls;
     String categoryId;
+    String categoryName;
     boolean isDeleted;
 }

@@ -38,5 +38,6 @@ public class Review {
 
     int rating; // 1 - 5 sao
     String comment;
+
     LocalDateTime createdAt;
 }

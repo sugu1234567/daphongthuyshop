@@ -27,6 +27,8 @@ import vn.sugu.daphongthuyshop.service.UserService;
 @Validated
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional
+@CrossOrigin(origins = "http://localhost:4200")
+
 public class UserController {
 
     UserService userService;

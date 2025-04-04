@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class OrderResponse {
     private String orderId;
     private String userId;
+    private String fullName;
     private String shippingAddress;
     private String note;
     private BigDecimal totalPrice;

@@ -131,4 +131,9 @@ public class ProductService {
         return new PageImpl<>(products.stream().map(productMapper::toProductResponse).toList(), pageable,
                 products.size());
     }
+
+    public Page<ProductResponse> getAllProducts(Pageable pageable) {
+        Page<Product> products = productRepository.findAll(pageable);
+        return products.map(productMapper::toProductResponse);
+    }
 }
