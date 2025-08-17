@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,15 +62,18 @@ public class ProductController {
         }
 
         @GetMapping
-        APIResponse<Page<ProductResponse>> searchProduct(
+        public APIResponse<Page<ProductResponse>> searchProducts(
                         @RequestParam(required = false) String name,
                         @RequestParam(required = false) String categoryName,
                         @RequestParam(required = false) BigDecimal minPrice,
+                        @RequestParam(required = false) Integer rating,
                         @PageableDefault(size = 10, sort = "name", direction = Direction.ASC) Pageable pageable) {
-                Page<ProductResponse> result = productService.searchProduct(name, categoryName, minPrice, pageable);
+
+                Page<ProductResponse> products = productService.searchProduct(name, categoryName, minPrice, rating,
+                                pageable);
                 return APIResponse.<Page<ProductResponse>>builder()
-                                .data(result)
-                                .message(result.isEmpty() ? "Không tìm thấy sản phẩm" : null)
+                                .message("Tìm kiếm sản phẩm thành công")
+                                .data(products)
                                 .build();
         }
 
@@ -81,4 +85,10 @@ public class ProductController {
                                 .message("Lấy danh sách sản phẩm thành công")
                                 .build();
         }
+
+        @GetMapping("/{productId}")
+        public ResponseEntity<ProductResponse> getProductById(@PathVariable String productId) {
+                return ResponseEntity.ok(productService.getProductById(productId));
+        }
+
 }

@@ -21,6 +21,8 @@ public class CheckoutRequest {
     List<String> cartItemIds;
     @NotEmpty(message = "SHIPPING_ADDRESS_IS_REQUIRED")
     String shippingAddress;
+    @NotEmpty(message = "PHONE_IS_REQUIRED")
+    String phoneNumber;
     @NotEmpty(message = "PAYMENT_METHOD_IS_REQUIRED")
     String paymentMethod;
     String note;

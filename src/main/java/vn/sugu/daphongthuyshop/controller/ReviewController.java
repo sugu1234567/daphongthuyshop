@@ -33,7 +33,7 @@ public class ReviewController {
     }
 
     // Lấy danh sách đánh giá theo sản phẩm
-    @GetMapping("/product/{productId}")
+    @GetMapping("/{productId}")
     APIResponse<List<ReviewResponse>> getReviewsByProduct(@PathVariable String productId) {
         List<ReviewResponse> reviews = reviewService.getReviewsByProduct(productId);
         return APIResponse.<List<ReviewResponse>>builder()

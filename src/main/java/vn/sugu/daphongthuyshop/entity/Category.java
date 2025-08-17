@@ -31,6 +31,7 @@ public class Category {
     String categoryId;
 
     String name;
+    @Column(columnDefinition = "MEDIUMTEXT")
     String description;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)

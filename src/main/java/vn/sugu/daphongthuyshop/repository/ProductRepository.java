@@ -15,19 +15,23 @@ import vn.sugu.daphongthuyshop.entity.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    boolean existsByName(String name);
+        boolean existsByName(String name);
 
-    Optional<Product> findById(String productId);
+        Optional<Product> findById(String productId);
 
-    Optional<Product> findByName(String name);
+        Optional<Product> findByName(String name);
 
-    @Query("SELECT p FROM Product p WHERE " +
-            "(:name IS NULL OR LOWER(p.name) LIKE %:name%) AND " +
-            "(:categoryName IS NULL OR LOWER(p.category.name) LIKE %:categoryName%) AND " +
-            "(:minPrice IS NULL OR p.price >= :minPrice) AND p.isDeleted = false")
-    List<Product> findByCriteria(
-            @Param("name") String name,
-            @Param("categoryName") String categoryName,
-            @Param("minPrice") BigDecimal minPrice,
-            Pageable pageable);
+        @Query("SELECT DISTINCT p FROM Product p LEFT JOIN Review r ON r.product = p WHERE " +
+                        "(:name IS NULL OR LOWER(p.name) LIKE %:name%) AND " +
+                        "(:categoryName IS NULL OR LOWER(p.category.name) LIKE %:categoryName%) AND " +
+                        "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
+                        "(:rating IS NULL OR (SELECT COALESCE(AVG(r2.rating), 0) FROM Review r2 WHERE r2.product = p) >= :rating) AND "
+                        +
+                        "p.isDeleted = false")
+        List<Product> findByCriteria(
+                        @Param("name") String name,
+                        @Param("categoryName") String categoryName,
+                        @Param("minPrice") BigDecimal minPrice,
+                        @Param("rating") Integer rating,
+                        Pageable pageable);
 }

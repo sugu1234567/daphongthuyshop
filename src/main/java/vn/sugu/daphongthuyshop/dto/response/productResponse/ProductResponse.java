@@ -22,4 +22,6 @@ public class ProductResponse {
     String categoryId;
     String categoryName;
     boolean isDeleted;
+    Double averageRating;
+    Integer totalReviews;
 }

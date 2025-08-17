@@ -19,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 public class ReviewRequest {
     @NotNull(message = "PRODUCT_ID_REQUIRED")
     String productId;
-
+    private String orderDetailId;
     @Min(value = 1, message = "RATING_MIN_1")
     @Max(value = 5, message = "RATING_MAX_5")
     int rating;

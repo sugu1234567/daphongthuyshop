@@ -24,6 +24,7 @@ public enum ErrorCode {
     INVALID_STATUS(400, "Trạng thái không hợp lệ", HttpStatus.BAD_REQUEST),
     DATE_INVALID(400, "thoi gian khong hop le", HttpStatus.BAD_REQUEST),
     ORDER_STATUS_UPDATE_NOT_ALLOWED(400, "Không được phép cập nhật trạng thái đơn hàng", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST(400, "Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST),
 
     CATEGORY_NAME_CHANGE_NOT_ALLOWED(400, "Không được phép thay đổi tên danh mục", HttpStatus.BAD_REQUEST),
     REVIEW_NOT_ALLOWED(400, "Không được phép đánh giá sản phẩm", HttpStatus.BAD_REQUEST),
@@ -63,7 +64,11 @@ public enum ErrorCode {
 
     ALREADY_REVIEWED(400, "Người dùng đã đánh giá sản phẩm này", HttpStatus.BAD_REQUEST),
 
-    MISSING_COOKIE(400, "Thiếu cookie bắt buộc", HttpStatus.BAD_REQUEST);
+    MISSING_COOKIE(400, "Thiếu cookie bắt buộc", HttpStatus.BAD_REQUEST),
+
+    PAYMENT_ERROR(400, "Lỗi trong quá trình thanh toán", HttpStatus.BAD_REQUEST),
+    PAYMENT_VERIFICATION_FAILED(400, "Xác thực thanh toán thất bại", HttpStatus.BAD_REQUEST),
+    CRYPTO_ERROR(400, "Lỗi mã hóa", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

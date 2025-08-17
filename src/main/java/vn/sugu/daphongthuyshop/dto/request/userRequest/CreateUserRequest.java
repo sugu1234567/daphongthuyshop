@@ -22,7 +22,7 @@ public class CreateUserRequest {
     String email;
 
     @NotBlank(message = "IS_REQUIRED")
-    @Size(min = 8, message = "INVALID_PASSWORD")
+    @Size(min = 6, message = "INVALID_PASSWORD")
     String password;
 
     @NotBlank(message = "IS_REQUIRED")

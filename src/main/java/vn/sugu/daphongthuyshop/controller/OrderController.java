@@ -15,6 +15,7 @@ import vn.sugu.daphongthuyshop.service.OrderService;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -65,5 +66,14 @@ public class OrderController {
             @Valid @RequestBody UpdateStatusRequest request) {
         OrderResponse response = orderService.updateOrderStatus(orderId, request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/my-orders")
+    public APIResponse<List<OrderResponse>> getMyOrders() {
+        List<OrderResponse> orders = orderService.getAllOrdersByUser();
+        return APIResponse.<List<OrderResponse>>builder()
+                .message("Lấy danh sách đơn hàng của bạn thành công")
+                .data(orders)
+                .build();
     }
 }

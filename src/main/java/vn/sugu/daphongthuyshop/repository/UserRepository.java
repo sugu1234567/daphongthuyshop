@@ -13,6 +13,8 @@ import vn.sugu.daphongthuyshop.entity.User;
 public interface UserRepository extends JpaRepository<User, String> {
     boolean existsByEmail(String email);
 
+    long count();
+
     Optional<User> findByFullName(String fullName);
 
     Optional<User> findByEmail(String email);

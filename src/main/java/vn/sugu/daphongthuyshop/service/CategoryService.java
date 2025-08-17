@@ -34,7 +34,7 @@ public class CategoryService {
     public CategoryResponse createCategory(CreateCategoryRequest request) {
 
         if (categoryRepository.findByName(request.getName()).isPresent()) {
-            throw new AppException(ErrorCode.CATEGORY_NOT_EXISTED);
+            throw new AppException(ErrorCode.CATEGORY_EXISTED);
         }
 
         Category category = categoryMapper.toCategory(request);

@@ -20,11 +20,13 @@ import vn.sugu.daphongthuyshop.exception.ErrorCode;
 import vn.sugu.daphongthuyshop.mapper.ProductMapper;
 import vn.sugu.daphongthuyshop.repository.CategoryRepository;
 import vn.sugu.daphongthuyshop.repository.ProductRepository;
+import vn.sugu.daphongthuyshop.repository.ReviewRepository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +38,7 @@ public class ProductService {
     CategoryRepository categoryRepository;
     ProductMapper productMapper;
     CloudinaryService cloudinaryService;
+    ReviewRepository reviewRepository;
 
     public ProductResponse createProduct(CreateProductRequest request, MultipartFile[] imageFiles) throws Exception {
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -116,10 +119,11 @@ public class ProductService {
     }
 
     public Page<ProductResponse> searchProduct(String name, String categoryName, BigDecimal minPrice,
-            Pageable pageable) {
+            Integer rating, Pageable pageable) {
         if ((name == null || name.trim().isEmpty()) &&
                 (categoryName == null || categoryName.trim().isEmpty()) &&
-                minPrice == null) {
+                minPrice == null &&
+                rating == null) {
             return new PageImpl<>(Collections.emptyList(), pageable, 0);
         }
 
@@ -127,13 +131,36 @@ public class ProductService {
         String normalizedCategoryName = categoryName != null ? categoryName.trim().toLowerCase() : null;
 
         List<Product> products = productRepository.findByCriteria(normalizedName, normalizedCategoryName, minPrice,
-                pageable);
-        return new PageImpl<>(products.stream().map(productMapper::toProductResponse).toList(), pageable,
-                products.size());
+                rating, pageable);
+
+        List<ProductResponse> productResponses = products.stream()
+                .map(product -> {
+                    ProductResponse response = productMapper.toProductResponse(product);
+                    response.setAverageRating(getAverageRating(product));
+                    response.setTotalReviews(getTotalReviews(product));
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(productResponses, pageable, products.size());
     }
 
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
         Page<Product> products = productRepository.findAll(pageable);
         return products.map(productMapper::toProductResponse);
+    }
+
+    public ProductResponse getProductById(String productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+        return productMapper.toProductResponse(product);
+    }
+
+    private Double getAverageRating(Product product) {
+        return reviewRepository.findAverageRatingByProduct(product);
+    }
+
+    private Integer getTotalReviews(Product product) {
+        return reviewRepository.countByProduct(product);
     }
 }

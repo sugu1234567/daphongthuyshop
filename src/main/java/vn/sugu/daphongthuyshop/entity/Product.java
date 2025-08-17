@@ -36,6 +36,7 @@ public class Product {
     String productId;
 
     String name;
+    @Column(columnDefinition = "MEDIUMTEXT")
     String description;
     BigDecimal price;
     int stock;

@@ -44,6 +44,8 @@ public class Order {
 
     String shippingAddress;
 
+    String phoneNumber;
+
     @Column(columnDefinition = "MEDIUMTEXT")
     String note;
 
@@ -58,4 +60,6 @@ public class Order {
     List<OrderDetail> orderDetails = new ArrayList<>();
 
     String paymentMethod;
+
+    String vnp_TxnRef;
 }

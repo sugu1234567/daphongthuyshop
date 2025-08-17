@@ -9,6 +9,7 @@ public class OrderDetailResponse {
     private String orderDetailId;
     private String orderId;
     private String productName;
+    private String productId;
     private int quantity;
     private BigDecimal price;
     private BigDecimal total;

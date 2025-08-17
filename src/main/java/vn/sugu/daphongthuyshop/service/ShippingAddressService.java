@@ -38,6 +38,7 @@ public class ShippingAddressService {
 
     private ShippingAddressResponse toShippingAddressResponse(ShippingAddress shippingAddress) {
         ShippingAddressResponse response = new ShippingAddressResponse();
+        response.setId(shippingAddress.getId());
         response.setUserId(shippingAddress.getUser().getUserId().toString());
         response.setFullName(shippingAddress.getFullName());
         response.setPhoneNumber(shippingAddress.getPhoneNumber());

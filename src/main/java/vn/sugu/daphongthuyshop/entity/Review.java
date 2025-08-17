@@ -1,6 +1,8 @@
 package vn.sugu.daphongthuyshop.entity;
 
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,6 +37,9 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
+
+    @Column(name = "order_detail_id")
+    private String orderDetailId;
 
     int rating; // 1 - 5 sao
     String comment;

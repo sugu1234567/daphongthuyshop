@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import vn.sugu.daphongthuyshop.dto.request.reviewRequest.ReviewRequest;
 import vn.sugu.daphongthuyshop.dto.request.reviewRequest.UpdateReviewRequest;
 import vn.sugu.daphongthuyshop.dto.response.reviewResponse.ReviewResponse;
-import vn.sugu.daphongthuyshop.entity.Order;
 import vn.sugu.daphongthuyshop.entity.Product;
 import vn.sugu.daphongthuyshop.entity.Review;
 import vn.sugu.daphongthuyshop.entity.User;
@@ -54,6 +53,7 @@ public class ReviewService {
                 .fullName(review.getUser().getFullName())
                 .productId(review.getProduct().getProductId())
                 .productName(review.getProduct().getName())
+                .orderDetailId(review.getOrderDetailId())
                 .rating(review.getRating())
                 .comment(review.getComment())
                 .createdAt(review.getCreatedAt())
@@ -66,23 +66,29 @@ public class ReviewService {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
-        List<Order> completedOrders = orderRepository.findByUserAndStatus(user, OrderStatus.COMPLETED);
-        boolean hasPurchased = completedOrders.stream()
-                .flatMap(order -> order.getOrderDetails().stream())
-                .anyMatch(detail -> detail.getProduct().getProductId().equals(request.getProductId()));
+        // Kiểm tra orderDetailId đã được cung cấp
+        if (request.getOrderDetailId() == null || request.getOrderDetailId().isEmpty()) {
+            throw new AppException(ErrorCode.INVALID_REQUEST);
+        }
 
-        if (!hasPurchased) {
+        // Kiểm tra OrderDetail thuộc về đơn hàng đã hoàn thành của người dùng hiện tại
+        boolean validOrderDetail = orderRepository.findByUserAndStatus(user, OrderStatus.COMPLETED).stream()
+                .flatMap(order -> order.getOrderDetails().stream())
+                .anyMatch(detail -> detail.getOrderDetailId().equals(request.getOrderDetailId()));
+
+        if (!validOrderDetail) {
             throw new AppException(ErrorCode.REVIEW_NOT_ALLOWED);
         }
 
-        boolean alreadyReviewed = reviewRepository.findByUserAndProduct(user, product).isPresent();
-        if (alreadyReviewed) {
+        // Kiểm tra OrderDetail đã được đánh giá chưa
+        if (reviewRepository.existsByOrderDetailId(request.getOrderDetailId())) {
             throw new AppException(ErrorCode.ALREADY_REVIEWED);
         }
 
         Review review = Review.builder()
                 .user(user)
                 .product(product)
+                .orderDetailId(request.getOrderDetailId())
                 .rating(request.getRating())
                 .comment(request.getComment())
                 .createdAt(LocalDateTime.now())
@@ -138,5 +144,10 @@ public class ReviewService {
         return reviews.stream()
                 .map(this::toReviewResponse)
                 .collect(Collectors.toList());
+    }
+
+    // Phương thức để kiểm tra OrderDetail đã được đánh giá chưa (tùy chọn)
+    public boolean isOrderDetailReviewed(String orderDetailId) {
+        return reviewRepository.existsByOrderDetailId(orderDetailId);
     }
 }

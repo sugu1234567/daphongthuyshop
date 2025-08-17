@@ -20,6 +20,7 @@ public class ReviewResponse {
     String fullName;
     String productId;
     String productName;
+    private String orderDetailId;
     int rating;
     String comment;
     LocalDateTime createdAt;

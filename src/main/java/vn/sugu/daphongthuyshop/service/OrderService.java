@@ -61,6 +61,7 @@ public class OrderService {
         response.setOrderId(order.getOrderId());
         response.setUserId(order.getUser().getUserId().toString());
         response.setFullName(order.getUser().getFullName());
+        response.setPhoneNumber(order.getPhoneNumber());
         response.setShippingAddress(order.getShippingAddress());
         response.setNote(order.getNote());
         response.setTotalPrice(order.getTotalPrice());
@@ -75,6 +76,7 @@ public class OrderService {
         response.setOrderDetailId(orderDetail.getOrderDetailId());
         response.setOrderId(orderDetail.getOrder().getOrderId());
         response.setProductName(orderDetail.getProduct().getName());
+        response.setProductId(orderDetail.getProduct().getProductId());
         response.setQuantity(orderDetail.getQuantity());
         response.setPrice(orderDetail.getPrice());
         response.setTotal(orderDetail.calculateTotal());
@@ -117,6 +119,7 @@ public class OrderService {
         Order order = Order.builder()
                 .user(user)
                 .shippingAddress(request.getShippingAddress())
+                .phoneNumber(request.getPhoneNumber())
                 .note(request.getNote())
                 .totalPrice(totalPrice)
                 .status(OrderStatus.PENDING)
@@ -139,19 +142,68 @@ public class OrderService {
         // Lưu đơn hàng (sẽ tự động lưu cả chi tiết đơn hàng)
         Order savedOrder = orderRepository.save(order);
 
-        // Cập nhật tồn kho
-        for (CartItem item : selectedItems) {
-            Product product = item.getProduct();
-            product.setStock(product.getStock() - item.getQuantity());
-            productRepository.save(product);
-        }
+        // Nếu thanh toán bằng COD, cập nhật tồn kho và xóa giỏ hàng
+        if ("COD".equalsIgnoreCase(request.getPaymentMethod())) {
+            // Cập nhật tồn kho
+            for (CartItem item : selectedItems) {
+                Product product = item.getProduct();
+                product.setStock(product.getStock() - item.getQuantity());
+                productRepository.save(product);
+            }
 
-        // Xóa các mục đã thanh toán khỏi giỏ hàng
-        cart.getCartItems().removeAll(selectedItems);
-        cartRepository.save(cart);
+            // Xóa các mục đã thanh toán khỏi giỏ hàng
+            cart.getCartItems().removeAll(selectedItems);
+            cartRepository.save(cart);
+        }
+        // Nếu thanh toán bằng VNPAY, không cập nhật tồn kho và giỏ hàng cho đến khi
+        // thanh toán thành công
 
         // Trả về response
         return toOrderResponse(savedOrder);
+    }
+
+    // Xử lý thanh toán thành công
+    public OrderResponse processSuccessfulPayment(String orderId, String txnRef) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        // Cập nhật trạng thái đơn hàng
+        order.setStatus(OrderStatus.PROCESSING);
+        order.setVnp_TxnRef(txnRef);
+        orderRepository.save(order);
+
+        // Cập nhật tồn kho
+        List<OrderDetail> orderDetails = orderDetailRepository.findByOrder(order);
+        for (OrderDetail detail : orderDetails) {
+            Product product = detail.getProduct();
+            product.setStock(product.getStock() - detail.getQuantity());
+            productRepository.save(product);
+        }
+
+        // Xóa sản phẩm khỏi giỏ hàng
+        User user = order.getUser();
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
+
+        for (OrderDetail detail : orderDetails) {
+            cart.getCartItems()
+                    .removeIf(item -> item.getProduct().getProductId().equals(detail.getProduct().getProductId()));
+        }
+        cartRepository.save(cart);
+
+        return toOrderResponse(order);
+    }
+
+    // Xử lý thanh toán thất bại
+    public OrderResponse processFaiiedPayment(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        // Cập nhật trạng thái đơn hàng thành thất bại
+        order.setStatus(OrderStatus.CANCELED);
+        orderRepository.save(order);
+
+        return toOrderResponse(order);
     }
 
     public List<OrderResponse> getAllOrdersByUser() {
@@ -160,6 +212,12 @@ public class OrderService {
         return orders.stream()
                 .map(this::toOrderResponse)
                 .collect(Collectors.toList());
+    }
+
+    public OrderResponse getOrderById(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        return toOrderResponse(order);
     }
 
     public List<OrderResponse> getAllOrders() {

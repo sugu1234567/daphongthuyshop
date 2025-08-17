@@ -8,6 +8,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -67,11 +69,17 @@ public class UserController {
                 .build();
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PatchMapping(value = "/{email}", consumes = { "multipart/form-data" })
     public APIResponse<UserResponse> updateEmployee(
             @PathVariable String email,
-            @Valid @RequestPart("request") UpdateUserRequest request,
+            @RequestPart("request") String requestJson, // Nhận JSON string thay vì object
             @RequestPart(value = "avatar", required = false) MultipartFile avatarFile) throws Exception {
+
+        // Parse JSON string to UpdateUserRequest
+        ObjectMapper objectMapper = new ObjectMapper();
+        UpdateUserRequest request = objectMapper.readValue(requestJson, UpdateUserRequest.class);
+
         return APIResponse.<UserResponse>builder()
                 .data(userService.updateUser(email, request, avatarFile))
                 .build();

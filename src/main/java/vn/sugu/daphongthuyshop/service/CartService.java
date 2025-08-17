@@ -153,6 +153,8 @@ public class CartService {
                 .map(item -> CartResponse.CartItemResponse.builder()
                         .cartItemId(item.getCartItemId())
                         .productId(item.getProduct().getProductId())
+                        .productName(item.getProduct().getName())
+                        .price(item.getProduct().getPrice())
                         .quantity(item.getQuantity())
                         .build())
                 .collect(Collectors.toList());

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class ShippingAddressResponse {
+    private String id;
     private String userId;
     private String fullName;
     private String phoneNumber;

@@ -294,7 +294,7 @@ public class AuthenticationService {
         user.setResetPasswordToken(token);
         userRepository.save(user);
 
-        String resetLink = "http://localhost:3000/reset-password?token=" + token;
+        String resetLink = "http://localhost:4200/reset-password/" + token;
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(request.getEmail());
